@@ -23,6 +23,17 @@ h1{font-size:clamp(34px,5.4vw,52px)}h2{font-size:clamp(26px,3.4vw,34px);margin-b
 .wrap{max-width:1240px;margin:0 auto}
 .lede{color:var(--mute);max-width:68ch;margin:14px 0 0}
 .note{font-size:13px;color:var(--dim);margin-top:10px}
+.tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:36px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tcol{padding:26px 28px 28px 0}.tcol+.tcol{padding-left:28px;border-left:1px solid var(--line)}
+.tk{font-size:13px;color:var(--dim);margin-bottom:10px}
+.tcol h3{font-size:22px;line-height:1.15;margin-bottom:12px}
+.tcol p{margin:0;color:#c9c9c9;font-size:15.5px}
+.prods{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:8px}
+.prods li{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border:1px solid var(--line);padding:10px 12px;background:var(--panel)}
+.prods b{font:600 15px Archivo,sans-serif}.prods span{font-size:13px;color:var(--mute);text-align:right}
+.who-list{list-style:none;margin:0;padding:0}.who-list li{padding:9px 0;border-bottom:1px solid #1d1d1d;color:#c9c9c9;font-size:15.5px}.who-list li:last-child{border-bottom:0}.who-list b{color:var(--ink);font-weight:600}
+@media(max-width:860px){.tgrid{grid-template-columns:1fr}.tcol,.tcol+.tcol{padding:22px 0;border-left:0}.tcol+.tcol{border-top:1px solid var(--line)}}
+.lede.wide{max-width:none}
 .thesis{font:800 clamp(24px,3.2vw,34px)/1.15 Archivo,sans-serif;margin:22px 0 6px;text-wrap:balance}
 .scale{margin-top:34px;border:1px solid var(--line);background:var(--panel);padding:20px 18px 14px}
 .scale-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-bottom:14px}
@@ -96,14 +107,14 @@ footer{color:var(--dim);font-size:13px;border-top:1px solid var(--line)}
 <body>
 <header class="band"><div class="wrap">
   <h1>Root Labs creator roster: US Instagram creators by reach and niche</h1>
-  <p class="lede">Root Labs should make content that is still useful in five years. A woman who is 35 today will be 40 then, still asking why her sleep has changed, how to recover from training, and what is actually in the gummy she takes every night. Explainers on magnesium and sleep, how turmeric is absorbed and what third-party testing checks keep getting searched, saved and shared long after trends fade.</p>
-  <p class="lede">That suits the brand. Root Labs makes three sugar-free, third-party-tested gummies for the body after 35: <b>Sleep</b> (liposomal magnesium + ashwagandha), <b>Immunity</b> (sea moss + black seed) and <b>Recovery</b> (turmeric + curcumin). They use well-known plant ingredients with long traditional use, and the lab testing to back them up: roots, not synthetics. The brand earns trust through proof, not hype.</p>
-  <p class="lede">So we should work with creators whose audience is women 35 and over, and who those women already go to for answers: menopause doctors, dietitians, herbalists and midlife strength coaches who explain the why. Alongside them, a smaller set of 35+ lifestyle and fitness creators can show the gummies as a quiet daily habit. Pick creators for audience age, credibility and engagement first, follower count second. Gen Z creators on the roster are there for reach tests, not the core plan.</p>
+  <p class="lede wide">Root Labs should make content that is still useful in five years. A woman who is 35 today will be 40 then, still asking why her sleep has changed, how to recover from training, and what is actually in the gummy she takes every night. Explainers on magnesium and sleep, how turmeric is absorbed and what third-party testing checks keep getting searched, saved and shared long after trends fade.</p>
+  <p class="lede wide">That suits the brand. Root Labs makes three sugar-free, third-party-tested gummies for the body after 35: <b>Sleep</b> (liposomal magnesium + ashwagandha), <b>Immunity</b> (sea moss + black seed) and <b>Recovery</b> (turmeric + curcumin). They use well-known plant ingredients with long traditional use, and the lab testing to back them up: roots, not synthetics. The brand earns trust through proof, not hype.</p>
+  <p class="lede wide">So we should work with creators whose audience is women 35 and over, and who those women already go to for answers: menopause doctors, dietitians, herbalists and midlife strength coaches who explain the why. Alongside them, a smaller set of 35+ lifestyle and fitness creators can show the gummies as a quiet daily habit. Pick creators for audience age, credibility and engagement first, follower count second. Gen Z creators on the roster are there for reach tests, not the core plan.</p>
 </div></header>
 
 <section class="band picks-band" style="padding-top:0" id="top-5"><div class="wrap">
   <h2>The five I'd sign first</h2>
-  <p class="lede">One per audience Root Labs needs, covering all three products: all speaking to women over 35: a magnesium specialist, a clinical herbal voice, a fitness voice, a 40+ lifestyle creator and the leading menopause doctor. They span 121k to 3.7M followers, so trust and reach both get tested.</p>
+  <p class="lede wide">One per audience Root Labs needs, covering all three products: all speaking to women over 35: a magnesium specialist, a clinical herbal voice, a fitness voice, a 40+ lifestyle creator and the leading menopause doctor. They span 121k to 3.7M followers, so trust and reach both get tested.</p>
   <div class="picks" id="picks" style="margin-top:26px"></div>
 </div></section>
 
