@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Root Labs Creator Roster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a lab's specimen index — clinical, confident, monochrome.
+   IDEA: a sample register; each creator is a labelled specimen card.
+   PICTURE: a follower-range scale whose bars show how many creators sit in each tier; click to filter.
+   COLOUR and TYPE: black ground, white ink, greys only. Archivo 800 heads, Inter body.
+   LAYOUT: title + scale up top, category tabs, card grid, then the top-5 brief, suggested categories, notes. */
+:root{color-scheme:dark;--bg:#0a0a0a;--panel:#121212;--line:#2a2a2a;--ink:#f4f4f4;--mute:#9a9a9a;--dim:#5c5c5c}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+a{color:var(--ink)}
+h1,h2,h3{font-family:Archivo,Inter,sans-serif;font-weight:800;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,5.4vw,52px)}h2{font-size:clamp(26px,3.4vw,34px);margin-bottom:8px}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.lede{color:var(--mute);max-width:68ch;margin:14px 0 0}
+.note{font-size:13px;color:var(--dim);margin-top:10px}
+.thesis{font:800 clamp(24px,3.2vw,34px)/1.15 Archivo,sans-serif;margin:22px 0 6px;text-wrap:balance}
+.scale{margin-top:34px;border:1px solid var(--line);background:var(--panel);padding:20px 18px 14px}
+.scale-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-bottom:14px}
+.bars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:200px}
+.bar{all:unset;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;height:100%;text-align:center;border-radius:2px}
+.bar:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.col{background:#2b2b2b;border-top:2px solid #6a6a6a;transition:background .2s,height .4s;min-height:4px}
+.bar:hover .col{background:#444}
+.bar[aria-pressed=true] .col{background:var(--ink);border-color:var(--ink)}
+.n{font:600 15px Archivo,sans-serif;margin-bottom:6px}
+.lab{font-size:13px;color:var(--mute);padding-top:8px;border-top:1px solid var(--line);margin-top:6px;white-space:nowrap}
+.bar[aria-pressed=true] .lab{color:var(--ink)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tab{font:500 15px Inter,sans-serif;color:var(--mute);background:transparent;border:1px solid var(--line);border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer}
+.tab:hover{color:var(--ink);border-color:#555}
+.tab[aria-pressed=true]{background:var(--ink);color:#0a0a0a;border-color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tab small{font-size:13px;opacity:.7;margin-left:6px}
+.status{margin:20px 0 14px;color:var(--mute);font-size:15px}
+.fbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:26px;padding:16px;border:1px solid var(--line);background:var(--panel)}
+.fld{display:flex;flex-direction:column;gap:6px;flex:0 1 220px}.fld.grow{flex:1 1 260px}
+.fld span{font-size:13px;color:var(--mute)}
+.fld select,.fld input{font:15px Inter,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;height:44px;padding:0 12px;width:100%}
+.fld select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,#9a9a9a 50%),linear-gradient(135deg,#9a9a9a 50%,transparent 50%);background-position:calc(100% - 18px) 19px,calc(100% - 13px) 19px;background-size:5px 5px;background-repeat:no-repeat;cursor:pointer}
+.fld select:focus-visible,.fld input:focus-visible,.reset:focus-visible,.th button:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.reset{height:44px;padding:0 16px;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:6px;font:500 14px Inter,sans-serif;cursor:pointer}.reset:hover{color:var(--ink);border-color:#555}
+.list{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:40px minmax(0,1.3fr) minmax(0,2fr) 92px 28px;gap:16px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line)}
+.row:not(.th):hover{background:#111}
+.th{padding:10px 4px;font-size:13px;color:var(--mute)}
+.th button{all:unset;cursor:pointer;color:var(--mute)}.th button[aria-pressed=true]{color:var(--ink)}
+.num-c{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .av{width:36px;height:36px;font-size:13px}
+.nm b{display:block;font-weight:600;font-size:15px}.nm a{font-size:14px;color:var(--mute);text-decoration:none;overflow-wrap:anywhere}.nm a:hover{color:var(--ink);text-decoration:underline}
+.ds{font-size:14px;color:#cfcfcf}.ds small{display:block;font-size:13px;color:var(--mute);margin-bottom:2px}
+.fl{font:600 16px Archivo,sans-serif}.er{font-size:14px;color:#cfcfcf}.er small{display:block;font-size:12px;color:var(--dim)}
+.ext{color:var(--mute);text-decoration:none;font-size:18px;text-align:center}.ext:hover{color:var(--ink)}
+@media(max-width:760px){.th{display:none}.row{grid-template-columns:36px minmax(0,1fr) auto;row-gap:6px}.row .ds{grid-column:2/4;grid-row:2}.row .fl{grid-column:3;grid-row:1}.row .er,.row .ext{display:none}.fld{flex:1 1 140px}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;gap:14px;align-items:center}
+.av{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font:800 19px Archivo,sans-serif;color:#0a0a0a;background:radial-gradient(circle at 30% 25%,#fff,#bdbdbd 70%,#8a8a8a);box-shadow:inset 0 -4px 8px rgba(0,0,0,.25)}
+.who b{display:block;font:600 17px Archivo,sans-serif}
+.who a{overflow-wrap:anywhere;color:var(--mute);text-decoration:none;font-size:15px}.who a:hover{color:var(--ink);text-decoration:underline}
+.fol{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0}
+.fol span{font:800 24px Archivo,sans-serif}.fol em{font-style:normal;font-size:13px;color:var(--mute)}
+.tag{font-size:13px;color:var(--mute)}
+.why{font-size:15px;color:#d6d6d6;margin:0}
+.go{margin-top:auto;font-size:14px;font-weight:600;text-decoration:none;border:1px solid var(--line);padding:10px 12px;text-align:center;min-height:44px}
+.go:hover{background:var(--ink);color:#0a0a0a}
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.tools input,.tools select{font:16px Inter,sans-serif;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:10px 14px;min-height:44px}.tools input{flex:1 1 260px}.tools input:focus-visible,.tools select:focus-visible{outline:2px solid var(--ink)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}.stats span{font-size:13px;border:1px solid var(--line);padding:3px 8px;color:#d6d6d6}
+.empty{border:1px dashed var(--line);padding:28px;color:var(--mute);grid-column:1/-1}
+.picks{border-top:1px solid var(--line)}
+.pick{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1.3fr);gap:22px;padding:26px 0;border-bottom:1px solid var(--line)}
+.num{font:800 44px Archivo,sans-serif;color:var(--dim);line-height:1}
+.pick h3{font-size:24px}.pick .meta{color:var(--mute);font-size:15px;margin:6px 0 10px}
+.pick p{margin:0 0 10px}
+.pick ul{margin:0;padding-left:18px}.pick li{margin-bottom:8px}
+.lbl{font-size:13px;color:var(--mute);margin-bottom:6px}
+.sugg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
+.sugg div{border:1px solid var(--line);padding:18px;background:var(--panel)}
+.sugg h3{font-size:19px;margin-bottom:8px}.sugg p{margin:0;color:#cfcfcf;font-size:15px}
+.rules{columns:2 320px;column-gap:40px;margin-top:16px;color:#cfcfcf}
+.rules p{break-inside:avoid;margin:0 0 14px}
+footer{color:var(--dim);font-size:13px;border-top:1px solid var(--line)}
+@media(max-width:700px){.bars{height:160px;gap:3px}.lab{font-size:11px;white-space:normal;line-height:1.2}.n{font-size:13px}.pick{grid-template-columns:1fr;gap:8px}.num{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.col{transition:none}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <h1>Root Labs creator roster: US Instagram creators by reach and niche</h1>
+  <p class="lede">Root Labs should make content that is still useful in five years. A woman who is 35 today will be 40 then, still asking why her sleep has changed, how to recover from training, and what is actually in the gummy she takes every night. Explainers on magnesium and sleep, how turmeric is absorbed and what third-party testing checks keep getting searched, saved and shared long after trends fade.</p>
+  <p class="lede">That suits the brand. Root Labs makes three sugar-free, third-party-tested gummies for the body after 35: <b>Sleep</b> (liposomal magnesium + ashwagandha), <b>Immunity</b> (sea moss + black seed) and <b>Recovery</b> (turmeric + curcumin). They use well-known plant ingredients with long traditional use, and the lab testing to back them up: roots, not synthetics. The brand earns trust through proof, not hype.</p>
+  <p class="lede">So we should work with creators whose audience is women 35 and over, and who those women already go to for answers: menopause doctors, dietitians, herbalists and midlife strength coaches who explain the why. Alongside them, a smaller set of 35+ lifestyle and fitness creators can show the gummies as a quiet daily habit. Pick creators for audience age, credibility and engagement first, follower count second. Gen Z creators on the roster are there for reach tests, not the core plan.</p>
+</div></header>
+
+<section class="band picks-band" style="padding-top:0" id="top-5"><div class="wrap">
+  <h2>The five I'd sign first</h2>
+  <p class="lede">One per audience Root Labs needs, covering all three products: all speaking to women over 35: a magnesium specialist, a clinical herbal voice, a fitness voice, a 40+ lifestyle creator and the leading menopause doctor. They span 121k to 3.7M followers, so trust and reach both get tested.</p>
+  <div class="picks" id="picks" style="margin-top:26px"></div>
+</div></section>
+
+<section class="band" id="roster"><div class="wrap">
+  <h2>Full roster</h2>
+  <p class="note">Sources: Influencer Hero's public US creator rankings (women's health, healthcare, fitness, healthy lifestyle, men's health), plus Modash and Social Cat listings and well-known creators. Follower counts were read directly from each Instagram profile on 24 Nov 2026. Check audience geography before outreach. Initials stand in for profile photos; click any name to open the real profile.</p>
+<div class="fbar" role="search">
+    <label class="fld"><span>Followers</span><select id="fr"></select></label>
+    <label class="fld"><span>Category</span><select id="fc"></select></label>
+    <label class="fld grow"><span>Search</span><input id="q" type="search" placeholder="Name, handle or niche"></label>
+    <button class="reset" id="reset" type="button">Clear</button>
+  </div>
+  <p class="status" id="status" aria-live="polite"></p>
+  <div class="list" id="grid"></div>
+</div></section>
+
+
+
+
+
+<script>
+{
+const RANGES=[
+ {id:'r0',lab:'0–10k',min:0,max:10000},{id:'r1',lab:'10k–50k',min:10001,max:50000},{id:'r2',lab:'50k–100k',min:50001,max:100000},
+ {id:'r3',lab:'100k–500k',min:100001,max:500000},{id:'r4',lab:'500k–1M',min:500001,max:1000000},{id:'r5',lab:'1M–3M',min:1000001,max:3000000},
+ {id:'r6',lab:'3M–5M',min:3000001,max:5000000},{id:'r7',lab:'5M–10M',min:5000001,max:10000000},{id:'r8',lab:'10M+',min:10000001,max:Infinity}];
+const CATS=[{id:'all',lab:'All'},{id:'ex',lab:'Doctors & experts'},{id:'wh',lab:"Women's health"},{id:'h',lab:'Health'},{id:'f',lab:'Fitness (men & women)'},{id:'l',lab:'Lifestyle & day-in-my-life'},{id:'hb',lab:'Herbalism & Ayurveda'},{id:'mv',lab:'Sleep & recovery'}];
+const C=[
+ // name, handle, followers, tags, niche, why, ER%, real-follower%  (ER/real from Influencer Hero where present)
+ ['Dr. Mary Claire Haver','drmaryclaire',3667354,'wh,ex','OB-GYN, menopause','The biggest menopause voice in the US. Use her for reach on midlife sleep. She is evidence-strict, so expect her to be a hard yes for herbals.'],
+ ['Dr. Kelly Casperson','kellycaspersonmd',578000,'wh,ex','Urologist, women\'s sexual health','Talks frankly about midlife sleep, stress and libido. A natural fit for Sleep.'],
+ ['Whitney Bischoff Angel, RN','whitney_b_angel',362000,'wh,ex','Fertility nurse','A nurse with a large women\'s health audience. Keep her briefs to Immunity and Recovery, since ashwagandha isn\'t for pregnancy.'],
+ ['Dr. Aviva Romm','dr.avivaromm',293000,'wh,ex,hb','MD + herbalist','Yale-trained MD who is also a herbalist. Her approval would count for a lot with an herbal brand.'],
+ ['Dr. Vonda Wright','drvondawright',1699288,'wh,ex,mv','Orthopedic surgeon, midlife strength','Speaks to active women 40+ about muscle and recovery. A strong fit for Recovery.'],
+ ['ashley | nourished motherhood','anourishedmother',234000,'wh','Ancestral nutrition, female physiology','Moms who read labels and care about clean, sugar-free products.'],
+ ['Hormone Hype Sisters','balancedbeyars',168000,'wh','Cycle & hormone health trio','Three hosts mean three times the content angles, and their audience is already into cycle health.'],
+ ['Nicole Jardim','nicolemjardim',125000,'wh','Period & cycle health coach','Cycle-health educator whose audience already buys magnesium and adaptogens.'],
+ ['Amanda Montalvo, RD','hormonehealingrd',121000,'wh,ex','Minerals & hormone health','Built her following on magnesium and minerals, so Sleep and mineral-dense sea moss fit her content directly.'],
+ ['Ali Cleek','agcleek',120000,'wh','Hormones, weight, women\'s health','About 10% engagement with women focused on stress and cortisol.',10.5],
+ ['Katie Braswell','livewildbewell',170000,'wh','Fertility & prenatal nutritionist','Holistic women\'s health audience. Because she is prenatal-focused, brief her on Immunity only.',1.5,83],
+ ['Courtney Babilya, RN','courtneykeepingbalance',421000,'wh,f','Nurse, cycle-based training','Brings cycle-synced training together with nursing credibility. Fits Recovery and Sleep.'],
+ ['Madison Wilson','itsfitmadiwilson',78000,'wh','PCOS & wellness','A PCOS audience that\'s anxious about sleep and stress.'],
+ ['Melissa Groves Azzaro, RDN','the.hormone.dietitian',77000,'wh,ex','PCOS & perimenopause RDN','Dietitian credibility with a tightly defined audience.'],
+ ['Krista King, RD','composednutrition',59000,'wh,ex','Hormone-balance dietitian','RD who explains how magnesium and stress hormones connect.',1.9,83],
+ ['Seana Phelps','seanaphelps',44000,'wh,f','Midlife fitness & menopause','Her following grew 170% in six months, all women in midlife training. Fits Sleep and Recovery.',1.7,83],
+ ['Khush Sra','endonutrition',84000,'wh','Endometriosis nutritionist','Endo audience looking for natural anti-inflammatory routines, which fits Recovery (turmeric).',1.3,81],
+ ['Brooke Miller, RD','nutrition.for.mamas',104000,'wh,ex','Postpartum dietitian','RD for moms. Brief her on Immunity only, and not while a mom is pregnant or breastfeeding.',2.7,86],
+ ['Lauren','sofreshnsogreeeeen',45000,'wh','Hormone nutrition & recipes','Her hormone-friendly recipes have room for a daily gummy habit.',2.3,82],
+ ['Alycia','embracingcycles',19000,'wh','Cycle & womb wellness (Brooklyn)','Cycle-literacy community with 5.2% engagement.',5.2,85],
+ ['Andrew Huberman','hubermanlab',8152510,'mv,ex','Neuroscience, Huberman Lab','His sleep toolkit made magnesium a household supplement. A very hard get, so treat him as aspirational.'],
+ ['Dr. Nicole LePera','the.holistic.psychologist',8897858,'h,ex','Holistic psychology','Huge audience interested in stress and the nervous system. Fits an ashwagandha-led Sleep angle.'],
+ ['Dr. Mark Hyman','drmarkhyman',3837225,'h,ex','Functional medicine','Popular with root-cause health buyers. Check conflicts first, since he sells his own products.'],
+ ['Kylie, MS, RD','nutritionbykylie',1922920,'h,ex','Registered dietitian','A rare mix of 1.9M followers and 9.3% engagement, with realistic advice. Possibly the best RD on this list.',9.3,85],
+ ['Dr. Peter Attia','peterattiamd',1567842,'h,ex','Longevity medicine','Longevity audience that cares about evidence. Better as a podcast ad read.'],
+ ['Dr. Rhonda Patrick','foundmyfitness',1204703,'h,ex,mv','Biomedical scientist, FoundMyFitness','Talks about magnesium, curcumin and sleep in depth. Her science-literate audience reads test results.'],
+ ['Dr. Will Bulsiewicz','theguthealthmd',669000,'h,ex','Gastroenterologist, gut health','Pairs with the Immunity gummy\'s sea moss and black seed.'],
+ ['Dr. Uma Naidoo','drumanaidoo',145000,'h,ex','Nutritional psychiatry','Covers food, mood and stress. Fits ashwagandha and turmeric.'],
+ ['Katie Moore','katiemoorewellness',640000,'h','Nutrition for women','Large and mostly US audience of women going for simple daily habits.'],
+ ['Dr. Jake Goodman, MD','jakegoodmanmd',459000,'h,ex,mv','Psychiatry, mental health','Doctor who talks about anxiety and sleep. A credible voice against relying on melatonin.',4.6,82],
+ ['Natalie Fardone, NDTR','_nutritionwithnat',409000,'h','Nutrition & recipes','Recipe-led creator. Gummies would sit naturally in her "what I take" posts.'],
+ ['Dr. Joe, MD','drjoe_md',1005853,'h,ex','ER doctor','A straight-talking ER doctor whose explainers people believe.',1.4,80],
+ ['Tasha Rosales','wellness.homemade',246259,'h','Label literacy, healthy swaps','She teaches people to read labels, so "no added sugar" and third-party testing land well with her audience.',3.6,82],
+ ['Meg Kilcup, PharmD','awholehealthlife',620594,'h,ex','Pharmacist, holistic health','A pharmacist who left conventional practice for holistic health. Credible on how herbs and medications interact.',1.1,84],
+ ['Christina Klapper, RDN','easyeatsdietitian',567846,'h,ex','Dietitian, easy recipes','26.5% engagement, which is exceptional. Great for quick routine reels.',26.5,86],
+ ['Claudia Kathryn','claudiakathrynn',164980,'h','Nutrition, Gen Z wellness','Reaches younger wellness buyers and has 400k+ on TikTok too.'],
+ ['Jared','the.health.goat',814752,'h','Holistic kitchen swaps','He makes "swap this for that" content. "Swap your melatonin" writes itself.',6.8,82],
+ ['Sofia Cienfuegos, PhD','sofia100',120632,'h,ex','Nutrition PhD, fasting research','Researcher credibility at mid-tier pricing.',5.2,84],
+ ['Brigid Titgemeier, RDN','beingbrigid',248602,'h,ex','Blood sugar & gut dietitian','A functional RD whose audience trusts her product picks.',1.3,80],
+ ['Isabella Migliorino','wellbybell',128375,'h','Gut health & fitness nutritionist','6.2% engagement with women who train. Fits Immunity and Recovery.',6.2,81],
+ ['Cassandra Lepore, RD','dietitiancass',137315,'h,ex','Simple nutrition RD','5.6% engagement and an 88% real-follower score.',5.6,88],
+ ['Hunter Stoler','healthwithhunter',811341,'h','Nutrition, grocery swaps','Male health coach. Reaches men without bro-y content.',3.4,80],
+ ['Andy Miller, RD','andydoeshealthy',71565,'h,ex','RD for busy families','Male RD for dads and families. A good fit for Immunity during cold season.',4.2,88],
+ ['Maddie, FDN-P','madd.healthy',127231,'h','Gut & hormone coach','Her gut-health focus suits Immunity (sea moss).',1.3,84],
+ ['Fiona','feelgoodwithfi',58640,'h,l','Holistic health & recipes','Real-food recipes with an 87% real-follower score.',3.4,87],
+ ['Kayla','fuelwithkay',18899,'h,l','Holistic health, paleo meals','17.2% engagement. A micro creator who punches far above her size.',17.2,88],
+ ['Whitney, FNTP','restored_nutrition',18775,'h,ex','Functional nutrition, gut & minerals','A minerals specialist at micro pricing, ideal for magnesium content.',1.7,88],
+ ['Briana Owen','breezy.wellness',116269,'h','Functional nutrition practitioner','Grew from about 16k to 116k on gut and hormone health content.',19.9,86],
+ ['Chelsea LeBlanc, RDN','chelsealeblancrdn',10944,'h,ex','Registered dietitian','Nano RD for credible "is this worth it?" reviews.'],
+ ['David Goggins','davidgoggins',13797612,'f','Endurance, discipline','Huge male reach (13.8M). He is selective, so he is a long-shot pick for Recovery.'],
+ ['Sam Sulek','sam_sulek',7383678,'f','Bodybuilding vlogs','Gen Z men in the gym. Natural home for the Recovery gummy.'],
+ ['Whitney Simmons','whitneyysimmons',3994546,'f','Women\'s strength training','Women\'s strength audience: Recovery after heavy lifts, Sleep on rest days.'],
+ ['Massy Arias','massy.arias',3114313,'f','Fitness for women & families','Bilingual reach and an audience of both men and women.'],
+ ['Noah Perlo','noahperlofit',2271277,'f','Sustainable dieting & fitness','2.3M followers, a 100% real-follower score and 3.2% engagement. A clean audience at scale.',3.2,100],
+ ['Bret Contreras, PhD','bretcontreras1',1931762,'f,ex','Strength scientist','Brings scientist credibility to training content and works with both men and women.'],
+ ['Danny','danorans',1140048,'f','Fitness coaching & streaming','Over 1M followers with 14.9% engagement, which is rare at this size.',14.9,81],
+ ['Brad Becca','bradjbecca',544859,'f','Family fitness coach','A dad and fitness coach who already partners with supplement brands.',1.5,81],
+ ['Alexxiusss','alexxiusss',543191,'f','Food, family, fitness (Dallas/LA)','About 7% engagement and a 50/50 male-female audience.',7.2],
+ ['Steve Burton','1steveburton',421126,'f','Weight loss & mindset','Male audience in midlife.',4.7,83],
+ ['Dré','gainsbydre_',339004,'f','Natural bodybuilding','His natural-lifting audience is drawn to "no synthetics".',1.8,81],
+ ['Derek Teel','dialedhealth',226653,'f,mv','Strength for cyclists','Endurance athletes who need recovery. 8.2% engagement.',8.2,87],
+ ['Austin Hendrickson','trainingtall',229001,'f','Fat loss, rowing, running','7.2% engagement with a big jump in followers recently.',7.2,86],
+ ['AG','alexgiardina15',157114,'f','Online coach, lifting','9.8% engagement with young men who lift.',9.8,81],
+ ['Laura Girard','laura.girard',137267,'f','Body-friendly fitness, NYC','Her following grew 139% in six months. NYC women who train.',3.0,82],
+ ['Samantha Christine','samcfit_',405727,'f,mv','Strength & triathlon','A triathlete who uses Recovery naturally.',3.7,81],
+ ['Harbor FIT','harbor_fit',258193,'f,mv','Ex-NFL strength coach','A nine-year NFL veteran is a credible voice for Recovery with men.',3.4,83],
+ ['Jess Carpentieri','jcarpfit',67641,'f','Women\'s gym confidence','Women new to lifting, a good audience for Recovery.',2.5,85],
+ ['Noah','__bignoah',113431,'f','Powerbuilding, kinesiology','Kinesiology degree plus 5.9% engagement.',5.9,85],
+ ['Ryan Caporice','_coachcap',29828,'f,mv','Mobility & strength','Mobility content fits a Recovery routine.',6.2,87],
+ ['Abbey Booher','abbeybooh_lifts',21193,'f','Strength education','16.3% engagement and a 91% real-follower score.',16.3,91],
+ ['Lauren Weeks','lauren_e_weeks',78133,'f,mv','Hyrox champion','A Hyrox champion makes a perfect Recovery story.',4.1,86],
+ ['Alix Earle','alixearle',5967251,'l','GRWM & day-in-the-life','Gen Z tastemaker. A slot in her routines would put Root Labs in front of a huge audience.'],
+ ['Sanne Vloet','sannevloet',947027,'l','NYC morning routines & wellness','Morning-routine content where a daily gummy fits easily on camera.'],
+ ['Lauryn Bosstick','laurynbosstick',2119755,'l','The Skinny Confidential','Wellness lifestyle buyers who will try new products.'],
+ ['Justine Doiron','justine_snacks',1341750,'l','Brooklyn cook, recipes','Big, high-quality food audience. A "what\'s in my kitchen" spot would work.',2.8,84],
+ ['Hannah Bronfman','hannahbronfman',1492082,'l','Wellness lifestyle, NYC','Polished wellness aesthetic. Well suited to brand-led content.'],
+ ['Samah Dada','dadaeats',495690,'l','Recipes & cookbooks','Her audience cooks from whole foods, which matches "roots not synthetics".',2.2,83],
+ ['Sally Butan','thebutanfam',399511,'l','Motherhood, lifestyle & travel','Very high engagement, with moms covering daily routines and travel.'],
+ ['Jennifer Latch','jenlatch',458738,'l','Holistic health & beauty 40+','Women 40+ with 5.4% engagement. Fits Sleep.',5.4,81],
+ ['Katie, RN','healthykatie_rn',284989,'l,ex','Nurse, recipes & lifestyle','A nurse living a healthy lifestyle on camera.',1.0,87],
+ ['Arpita Patel','that.urbanmom',262517,'l','Home cooking & self-care','South Asian audience that knows turmeric and ashwagandha from home.',4.0,81],
+ ['Genesis Sosa','genesissosa',215201,'l','Motherhood & recipes','11.6% engagement with moms.',11.6,83],
+ ['Anjali Shah','anjalishah816',54016,'l,f','NYC bootcamp & marathons','A day-in-my-life runner whose followers grew 108% in six months.',2.7,86],
+ ['Anne Snow','annesnowlifestyle',84369,'l','Macro coaching for busy moms','Busy-mom routines with an 86% real-follower score.',1.1,86],
+ ['Leslie Stanford','wwhealthcoach',24508,'l','Wellness coach, mom of 3','Micro creator who shows family routines.',1.9,86],
+ ['gicellexx','gicellexx',63755,'l','Lifestyle, cooking, home (CA)','Cost-efficient UGC for daily routines.'],
+ ['Jes Knutson','jesknutson',14701,'l','Plant-based, Pilates, mental wellness','90% real-follower score.',3.5,90],
+ ['Kristen Lillian','kristen_lillian',9227,'l','Mom life, yoga, mental health','Nano mom and yoga creator. Good for gifting.'],
+ ['Ella Leupold','ellaleupold',9028,'l','Movement & meditation (Dallas)','Nano wellness creator with strong reel plays for her size.'],
+ ['Tushita Hariharan','tushita.h',744000,'hb','Ayurveda','Large Ayurveda audience that already knows ashwagandha and turmeric.'],
+ ['Juliet Blankespoor','chestnutschoolherbs',299704,'hb,ex','Herbalist, Chestnut School','Respected herbal educator. Strong for the ingredient-origin story.'],
+ ['Ash Ruiz','herbal.ash',365534,'hb','Herbalism','Herbal content for a younger crowd. Good for black seed and sea moss explainers.'],
+ ['Dr. Tanda Cook, ND','drtandacook',128885,'hb,ex','Naturopathic doctor, farmer','A naturopath who grows plants. Good for the "from roots" story.',1.0],
+ ['Dr. Dan Ginader, DPT','dr.dan_dpt',644131,'mv,ex','Sports physical therapist, NYC','A physical therapist is the most credible voice for Recovery.',1.1,85],
+ ['Dr. Jason Hooper, DPT','hoopersbetaofficial',67958,'mv,ex','Climbing rehab physical therapist','Climbers trust him, with a 91% real-follower score.',3.0,91],
+ ['Cortney Berling, RD','eatwell.runbetter',101933,'mv,ex','Dietitian + running coach','Endurance runners who need Recovery and Sleep.',3.0,89],
+ ['Shawn Stevenson','shawnmodel',455502,'mv','The Model Health Show','Author of Sleep Smarter. The most natural voice in the US for the Sleep gummy.']
+];
+const S={r:'all',c:'all',q:'',sort:'f'};
+const has=(c,id)=>id==='all'||c[3].split(',').includes(id);
+const fmt=n=>n>=1e6?(n/1e6).toFixed(n>=1e7?0:1).replace('.0','')+'M':n>=1e3?Math.round(n/1e3)+'k':String(n);
+const rangeOf=n=>RANGES.find(r=>n>=r.min&&n<=r.max).id;
+const ini=s=>s.replace(/^Dr\.\s*/,'').split(/[\s|,]+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+const catLab=id=>CATS.find(c=>c.id===id).lab;
+const fr=document.getElementById('fr'),fc=document.getElementById('fc'),grid=document.getElementById('grid'),status=document.getElementById('status');
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const link=h=>`https://www.instagram.com/${esc(h)}/`;
+function render(){
+  const q=S.q.trim().toLowerCase();const match=c=>!q||(c[0]+' '+c[1]+' '+c[4]).toLowerCase().includes(q);
+  const inCat=C.filter(c=>has(c,S.c)&&match(c));
+  fr.innerHTML=`<option value="all">All ranges (${inCat.length})</option>`+RANGES.map(r=>`<option value="${r.id}">${r.lab} (${inCat.filter(c=>rangeOf(c[2])===r.id).length})</option>`).join('');fr.value=S.r;
+  fc.innerHTML=CATS.map(c=>`<option value="${c.id}">${c.id==='all'?'All categories':c.lab} (${C.filter(x=>has(x,c.id)&&match(x)&&(S.r==='all'||rangeOf(x[2])===S.r)).length})</option>`).join('');fc.value=S.c;
+  const list=inCat.filter(c=>S.r==='all'||rangeOf(c[2])===S.r).sort(S.sort==='e'?(a,b)=>(b[6]??-1)-(a[6]??-1)||b[2]-a[2]:(a,b)=>b[2]-a[2]);
+  status.textContent=`${list.length} creator${list.length===1?'':'s'}`;
+  const head=`<div class="row th"><span></span><span>Creator</span><span>Focus and fit</span><span class="num-c">Followers</span><span></span></div>`;
+  grid.innerHTML=list.length?head+list.map(c=>`<div class="row"><div class="av" aria-hidden="true">${esc(ini(c[0]))}</div><div class="nm"><b>${esc(c[0])}</b><a href="${link(c[1])}" target="_blank" rel="noopener">@${esc(c[1])}</a></div><div class="ds"><small>${esc(c[3].split(',').map(catLab).join(' · '))} — ${esc(c[4])}</small>${esc(c[5])}</div><div class="num-c fl">${fmt(c[2])}</div><a class="ext" href="${link(c[1])}" target="_blank" rel="noopener" aria-label="Open @${esc(c[1])} on Instagram">↗</a></div>`).join('')
+   :`<div class="empty">No creators match these filters yet. For the smallest tiers, run a gifting and ambassador application and screen applicants for US audience share above 60% and engagement above 3%.</div>`;
+}
+document.getElementById('q').addEventListener('input',e=>{S.q=e.target.value;render()});
+fr.addEventListener('change',e=>{S.r=e.target.value;render()});
+fc.addEventListener('change',e=>{S.c=e.target.value;render()});
+grid.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(!b)return;S.sort=b.dataset.s;render()});
+document.getElementById('reset').addEventListener('click',()=>{S.r='all';S.c='all';S.q='';S.sort='f';document.getElementById('q').value='';render()});
+render();
+const P=[
+ ['Amanda Montalvo, RD','hormonehealingrd','~121k · Women\'s health · Sleep + Immunity','She built her following on magnesium and minerals, which is exactly what Sleep (liposomal magnesium) and Immunity (mineral-dense sea moss) are. Mid-tier pricing, an audience that trusts her, and real credentials.',['3-reel series: "Magnesium, cortisol and your sleep". Sleep shows up as her nightly magnesium.','Saveable carousel: "Not all magnesium is equal", explaining liposomal forms in Root Labs\' approved wording.','Stories Q&A plus a link sticker with a tracked code. Whitelist the best reel for paid ads.']],
+ ['Dr. Aviva Romm','dr.avivaromm','~293k · Women\'s health / herbal · all three','She is both an MD and a herbalist, and ashwagandha, turmeric and black seed are herbs she already teaches. One honest post from her builds trust that can be quoted for years.',['Long-form reel: "How I vet an herbal supplement before I will take it", using Root Labs\' third-party test results.','Explainer: why turmeric needs black pepper, and what black seed has traditionally been used for.','Newsletter feature plus approved quote usage on the product pages (with her sign-off).']],
+ ['Massy Arias','massy.arias','~3.1M · Fitness, men & women · Recovery + Immunity','Big reach to both men and women, plus bilingual (English/Spanish) content. That opens the Hispanic US wellness market, which is underserved. Training families need Recovery and Immunity.',['"30-day recovery" challenge: Recovery gummy after every workout, with UGC from followers.','Reel: "My post-workout recovery stack", with the gummy in her real routine.','Family-season reel with Immunity, plus a Spanish-language cut of the hero reel for Spark ads.']],
+ ['Jennifer Latch','jenlatch','~459k · Lifestyle 40+ · Sleep + Immunity','She shows holistic health and beauty for women over 40. Her followers are the exact customer, and her daily-routine content makes a gummy habit look normal, not sold.',['"My 40+ evening routine" reel: Sleep at wind-down, no melatonin.','"What changed after 40" talking-head series, with Immunity as one of her daily non-negotiables.','Stories with a tracked code and a 30-day check-in post on her sleep.']],
+ ['Dr. Mary Claire Haver','drmaryclaire','~3.7M · Women\'s health / sleep · Sleep','The most trusted menopause doctor in the US, speaking to millions of women 35+ whose sleep is changing. She is evidence-strict, so lead with the magnesium science and testing. If she says yes, it defines the category.',['Reel: "Why sleep falls apart in perimenopause", with magnesium as one evidence-based tool.','Q&A carousel on magnesium forms and dosing, in Root Labs\' approved wording.','Newsletter or podcast mention, which keeps being found for years.']]
+];
+document.getElementById('picks').innerHTML=P.map((p,i)=>`<div class="pick"><div class="num">${i+1}</div><div><h3>${esc(p[0])}</h3><div class="meta"><a href="https://www.instagram.com/${esc(p[1])}/" target="_blank" rel="noopener">@${esc(p[1])}</a> · ${esc(p[2])}</div><div class="lbl">Why her or him</div><p>${esc(p[3])}</p></div><div><div class="lbl">What they'd make</div><ul>${p[4].map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>`).join('');
+}
+</script>
+</body>
+</html>
